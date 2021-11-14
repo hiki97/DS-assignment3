@@ -7,6 +7,7 @@ import "strings"
 import "mapreduce"
 import "strconv"
 import "container/list"
+import "unicode"
 
 // our simplified version of MapReduce does not supply a
 // key to the Map function, as in the paper; only a value,
@@ -14,7 +15,10 @@ import "container/list"
 // value should be a list of key/value pairs, each represented
 // by a mapreduce.KeyValue.
 func Map(value string) *list.List {
-	words := strings.Fields(value)	
+	f := func(c rune) bool {
+		return !unicode.IsLetter(c)
+	}
+	words := strings.FieldsFunc(value, f)
 	wordMap := list.New()
 	for _, word := range words {
 		wordMap.PushBack(mapreduce.KeyValue{word, "1"})
